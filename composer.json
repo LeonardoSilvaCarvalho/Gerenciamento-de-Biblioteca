@@ -1,0 +1,35 @@
+{
+    "name": "leonardocarvalho/gerenciamentodebiblioteca",
+    "description": "Projeto de gerenciamento de biblioteca em PHP.",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.1",
+        "ext-pdo": "*"
+    },
+    "authors": [
+        {
+            "name": "Leonardo Carvalho",
+            "email": "leonardomajornior@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "MF\\": "vendor/MF/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix --rules=@PSR2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpunit/phpunit": "^11.4",
+        "mockery/mockery": "^1.6",
+        "ext-xdebug": "*"
+    }
+}

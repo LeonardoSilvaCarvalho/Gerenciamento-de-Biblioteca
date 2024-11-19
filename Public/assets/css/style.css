@@ -1,0 +1,9 @@
+.carrossel-img {
+    height: 500px; /* Ajuste a altura conforme necessário */
+    object-fit: cover; /* Garante que as imagens preencham o espaço proporcionalmente */
+}
+
+/* Ajustar o espaçamento */
+.carousel, .card {
+    margin-top: 20px;
+}

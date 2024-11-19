@@ -1,0 +1,116 @@
+<?php
+$page = basename($_SERVER['REQUEST_URI']);
+?>
+
+<!-- Main Content -->
+<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Emprestimos</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/home"><i class="zmdi zmdi-library"></i>Home</a>
+                        </li>
+                        <?php if ($_SERVER['REQUEST_URI'] == '/emprestimos') : ?>
+                            <li class="breadcrumb-item active">Emprestimos</li>
+                        <?php endif; ?>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <a href="/sair" class="mega-menu btn btn-danger btn-icon float-right" title="Sair"><i class="zmdi zmdi-power"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <?php if ($_SESSION['tipo_usuario'] === 'gerente'):?>
+        <form method="GET" action="/emprestimos" id="formpesquisa" class="mb-4">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input  type="text"
+                                name="pesquisar"
+                                id="pesquisar"
+                                class="form-control"
+                                placeholder="Digite o nome do usuário"
+                                aria-label="Pesquisar Usuário">
+                        <div class="input-group-append">
+                            <button type="submit"
+                                    class="btn btn-primary m-0"
+                                    onclick="document.getElementById('formpesquisa').submit();">
+                                    Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <?php endif;?>
+        <?php if (isset($this->view->success) && $this->view->success) { ?>
+            <small class="form-text text-success font-13 font-weight-bold text-center alert-success"><?= $this->view->success ?></small>
+        <?php } ?>
+        <?php if (isset($this->view->error) && $this->view->error) { ?>
+            <small class="form-text text-danger font-13 font-weight-bold text-center alert-danger"><?= $this->view->error ?></small>
+        <?php } ?>
+        <div class="container-fluid">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <?php if (in_array($_SESSION['tipo_usuario'], ['professor', 'gerente'])):?>
+                                <th>Nome Usuario</th>
+                            <?php endif;?>
+                            <th>Nome Livro</th>
+                            <th>Data Retirada</th>
+                            <th>Data Devolução</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($this->view->emprestimos as $emprestimo): ?>
+                        <tr>
+                            <?php if ($_SESSION['tipo_usuario'] === 'gerente' || $_SESSION['tipo_usuario'] === 'professor'): ?>
+                                <td scope="row"><?= $emprestimo['nome_usuario']; ?></td>
+                            <?php endif; ?>
+                            <td><?= $emprestimo['nome_livro']; ?></td>
+                            <td><?= date('d/m/Y', strtotime($emprestimo['dataEmprestimo'])); ?></td>
+                            <td>
+                        <?php
+                        $dataDevolucao = new DateTime($emprestimo['dataDevolucao']);
+                        $dataAtual = new DateTime();
+                        if ($dataAtual > $dataDevolucao) {
+                            echo 'Pendente';
+                        } else {
+                            echo $dataDevolucao->format('d/m/Y');
+                        }
+                        ?>
+                            </td>
+                            <td>
+                                <?php if ($_SESSION['tipo_usuario'] !== 'gerente' && !($emprestimo['devolucao_solicitada'] ?? false)): ?>
+                                    <!-- Botão para solicitar devolução -->
+                                    <a href="/livros/solicitarDevolucao/<?= $emprestimo['livro_id'] ?>" class="btn btn-warning">
+                                        Solicitar Devolução
+                                    </a>
+                                <?php elseif ($_SESSION['tipo_usuario'] === 'gerente' && ($emprestimo['devolucao_solicitada'] ?? false)): ?>
+                                    <!-- Botão para confirmar devolução -->
+                                    <a href="/livros/confirmarDevolucao/<?= $emprestimo['livro_id'] ?>/<?= $emprestimo['usuario_id'] ?>" class="btn btn-success">
+                                        Confirmar Devolução
+                                    </a>
+                                <?php elseif ($_SESSION['tipo_usuario'] === 'gerente' && !($emprestimo['devolucao_solicitada'] ?? false) && !($emprestimo['devolvido'] ?? false)): ?>
+                                    <!-- Botão para pegar livro (gerente, sem solicitação e livro não devolvido) -->
+                                    <a href="/livros/confirmarDevolucao/<?= $emprestimo['livro_id'] ?>/<?= $emprestimo['usuario_id'] ?>" class="btn btn-primary">
+                                        Pegar Livro
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+

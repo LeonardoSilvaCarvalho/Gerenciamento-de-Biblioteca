@@ -1,0 +1,109 @@
+<?php
+$page = basename($_SERVER['REQUEST_URI']);
+$usuario = $_SESSION['id'];
+?>
+
+
+<!-- Main Content -->
+<section class="content">
+    <div class="body_scroll">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <h2>Usuarios</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/home"><i class="zmdi zmdi-home"></i> Home</a>
+                        </li>
+                        <?php if ($_SERVER['REQUEST_URI'] == '/usuarios' || $_SERVER['REQUEST_URI'] == '/registrarlivro') : ?>
+                            <li class="breadcrumb-item active">Usuarios</li>
+                        <?php endif; ?>
+                    </ul>
+                    <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <a href="/sair" class="mega-menu btn btn-danger btn-icon float-right" title="Sair"><i class="zmdi zmdi-power"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <?php if (isset($this->view->success) && $this->view->success) { ?>
+                            <small class="form-text text-success font-13 font-weight-bold text-center alert-success"><?= $this->view->success ?></small>
+                        <?php } ?>
+                        <?php if (isset($this->view->error) && $this->view->error) { ?>
+                            <small class="form-text text-danger font-13 font-weight-bold text-center alert-danger"><?= $this->view->error ?></small>
+                        <?php } ?>
+                        <ul class="nav nav-tabs pl-0 pr-0">
+                            <?php if (in_array($_SESSION['tipo_usuario'], ['professor', 'gerente'])): ?>
+                                <li class="nav-item"><a class="btn btn-success font-weight-bold font-13" href="/inscreverse">
+                                        <i class="zmdi zmdi-plus font-13 font-weight-bold"></i> Cadastrar</a>
+                                </li>
+                            <?php endif;?>
+                            <li class="col-md-8">
+                                <form method="GET" action="/usuarios" id="formpesquisa" class="mb-4">
+                                    <div class="row justify-content-center align-items-center">
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input  type="text"
+                                                        name="pesquisar"
+                                                        id="pesquisar"
+                                                        class="form-control"
+                                                        placeholder="Pesquise um usuario"
+                                                        aria-label="Pesquisar usuarios">
+                                                <div class="input-group-append">
+                                                    <button type="submit"
+                                                            class="btn btn-primary m-0"
+                                                            onclick="document.getElementById('formpesquisa').submit();">
+                                                        Buscar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Nome Usuario</th>
+                                <th>CPF</th>
+                                <th>Email</th>
+                                <th>Ação</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($this->view->usuarios as $usuarios): ?>
+                                <tr>
+                                    <td scope="row"><?= $usuarios['nome']; ?></td>
+                                    <td><?= $usuarios['cpf']; ?></td>
+                                    <td><?= $usuarios['email']; ?></td>
+                                    <td class="p-0">
+                                        <?php if ($_SESSION['tipo_usuario'] === 'gerente'): ?>
+                                            <form id="formexcluir-<?= $usuarios['id'] ?>" action="/deletarusuario/<?= $usuarios['id'] ?>" method="post">
+                                                <button type="button" class="btn btn-round btn-danger"
+                                                        onclick="if (confirm('Certeza que deseja excluir o <?= $usuarios['nome'] ?>?')) { document.getElementById('formexcluir-<?= $usuarios['id'] ?>').submit(); }">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                </button>
+                                            </form>
+                                        <?php endif;?>
+                                    <td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
