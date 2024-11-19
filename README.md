@@ -22,4 +22,14 @@ How to Run the System Locally
   After that just access localhost:8080 in your browser.
   If not, use the command prompt to go to the project's public folder and pass the above field to start the server.
 
+Access login:
+Gerente: Admin@admin.com   
+Password: 123456
+-------------------------------------------
+Aluno: Aluno1@gmai.com 
+Password: 123456
+---------------------------------------------
+Professor: professor@professor.com  
+Password: 123456 
+
  
